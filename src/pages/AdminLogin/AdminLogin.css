@@ -1,0 +1,153 @@
+.loginform {
+  display: flex;
+  width: 100%;
+  height: 92vh;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  image-rendering: -webkit-optimize-contrast;
+  /* background-color: black; */
+  form {
+      display: flex;
+      flex-direction: column;
+      row-gap: 2vw;
+      background: transparent;
+      /* backdrop-filter: blur(10px); */
+      border-radius: 10px;
+      height: 100%;
+      width: 100%;
+      align-items: center;
+      /* justify-content: center; */
+
+      label {
+          font-size: 2vw;
+          margin-top: 2vh;
+          text-transform: uppercase;
+          padding: 5px 10px;
+          padding-left: 0;
+
+      }
+
+      input {
+          border-radius: 10px;
+          background: transparent;
+          /* text-align: center; */
+          padding: 10px;
+          color: black;
+          font-size: 1.2vw;
+          background-color: white;
+      }
+
+      input::placeholder {
+          color: black;
+      }
+      button {
+          --border: 2px;    /* the border width */
+          --slant: 0.7em;   /* control the slanted corners */
+          --color: red; /* the color */
+          text-transform: uppercase;
+          color: white;
+          font-size: 1vw;
+          padding: 0.5rem 0.5em;
+          border: none;
+          border-radius: 2px;
+          cursor: pointer;
+          font-weight: bold;
+          width: 20%;
+          background: 
+             linear-gradient(to bottom left,var(--color)  50%,#0000 50.1%) top right,
+             linear-gradient(to top   right,var(--color)  50%,#0000 50.1%) bottom left;
+          background-size: calc(var(--slant) + 1.3*var(--border)) calc(var(--slant) + 1.3*var(--border));
+          background-repeat: no-repeat;
+                  /* clip-path: 
+              polygon(0 0, calc(100% - var(--slant)) 0, 100% var(--slant),
+                      100% 100%, var(--slant) 100%,0 calc(100% - var(--slant))
+                     ); */
+          box-shadow:
+            0 0 0 200px inset var(--s,#0000),
+            0 0 0 var(--border) inset var(--color);
+          
+          transition: color var(--t,0.3s), background-size 0.3s;
+        }
+        button:focus-visible {
+          outline-offset: calc(-1*var(--border));
+          outline: var(--border) solid #000c;
+          clip-path: none;
+          background-size: 0 0;
+        }
+        button:hover,
+        button:active{
+          background-size: 100% 100%;
+          box-shadow: 
+          0 0 5px red,
+          0 0 10px red,
+          0 0 20px red,
+          0 0 40px #4a5748,
+          0 0 80px red;
+          color: #fff;
+          border: 2px solid white;
+          --t: 0.2s 0.1s;
+  
+        }
+        button:active {
+          --s: #0005;
+          transition: none;
+        }
+        
+
+  }
+}
+.bg-image {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover; /* or 'contain' for full image without cropping */
+  z-index: -1; /* Ensures it stays behind content */
+}
+.formcontain{
+display: flex ;
+justify-content: center;
+align-items: center;
+  height: 70%;
+  width: 50%;
+  /* background: url("../../../public/Images/humanhead.jpg"); */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  flex-direction: column;
+  p{
+    font-size: 1.5vw;
+  }
+
+}
+@media screen and (max-width: 426px) {
+  .formcontain p{
+      font-size: 5vw;
+    
+  }
+  .admin-img{
+    display: none;
+  }
+  .loginform {
+      form {
+          width: 100%;
+          button {
+              width: 40%;
+              font-size: 6vw;
+              margin-top: 5vh;
+          }
+          input{
+            font-size: 6vw;
+          }
+      }
+  }
+  .loginform form{
+    label{
+      font-size:10vw ;
+    }
+  }
+  .formcontain{
+      width: 100%;
+  }
+
+}

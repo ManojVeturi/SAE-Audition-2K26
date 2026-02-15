@@ -1,0 +1,192 @@
+/* body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #333;
+} */
+
+.btnctn{
+    padding-bottom: 10px;
+    list-style-type: none;
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+}
+
+.knowmoreabtsatbutton{
+    font-size: 25px;
+    width: 8em;
+    height: 2em;
+    color: red;
+    border-left: 0.08em solid;
+    position: relative;
+    margin-top: 0.8em;
+    cursor: pointer;
+}
+
+.knowmoreabtsatbutton::before,
+.knowmoreabtsatbutton::after
+ {
+    content: '';
+    position: absolute;
+    width: inherit;
+    border-left: inherit;
+    z-index: -1;
+}
+
+.knowmoreabtsatbutton::before {
+    height: 80%;
+    top: 10%;
+    left: calc(-0.15em - 0.08em * 2);
+    /* filter: brightness(0.8); */
+}
+
+.knowmoreabtsatbutton::after {
+    height: 60%;
+    top: 20%;
+    left: calc(-0.15em * 2 - 0.08em * 3);
+    /* filter: brightness(0.6); */
+}
+
+.knowmoreabtsatbutton span {
+    position: relative;
+    height: 120%;
+    top: -10%;
+    box-sizing: border-box;
+    border: 0.08em solid;
+    background-color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: sans-serif;
+    text-transform: capitalize;
+    transform: translateX(calc(-0.15em * 3 - 0.08em * 2));
+    transition: 0.3s;
+}
+
+
+
+.playbtn {
+  position: relative;
+  display: inline-block;
+  padding: 25px 30px;
+  margin: 40px 0;
+  color: red;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: 0.5s;
+  font-weight: 600;
+  letter-spacing: 4px;
+  overflow: hidden;
+}
+.playbtn:hover {
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 0 0 5px #fff, 0 0 25px #fff, 0 0 50px #fff, 0 0 200px #fff;
+  -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+}
+
+.playbtn span {
+  position: absolute;
+  display: block;
+}
+
+.playbtn span:nth-child(1) {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(90deg, transparent, #fff);
+  animation: animate1 1s linear infinite;
+}
+
+@keyframes animate1 {
+  0% {
+    left: -100%;
+  }
+  50%,
+  100% {
+    left: 100%;
+  }
+}
+
+.playbtn span:nth-child(2) {
+  top: -100%;
+  right: 0;
+  width: 10px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, #fff);
+  animation: animate2 1s linear infinite;
+  animation-delay: 0.25s;
+}
+
+@keyframes animate2 {
+  0% {
+    top: -100%;
+  }
+  50%,
+  100% {
+    top: 100%;
+  }
+}
+
+.playbtn span:nth-child(3) {
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(270deg, transparent, #fff);
+  animation: animate3 1s linear infinite;
+  animation-delay: 0.5s;
+}
+
+@keyframes animate3 {
+  0% {
+    right: -100%;
+  }
+  50%,
+  100% {
+    right: 100%;
+  }
+}
+
+.playbtn span:nth-child(4) {
+  bottom: -100%;
+  left: 0;
+  width: 10px;
+  height: 100%;
+  background: linear-gradient(360deg, transparent, #fff);
+  animation: animate4 1s linear infinite;
+  animation-delay: 0.75s;
+}
+
+@keyframes animate4 {
+  0% {
+    bottom: -100%;
+  }
+  50%,
+  100% {
+    bottom: 100%;
+  }
+}
+
+/* Subscribe button styles */
+.subscribe-btn {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  color: var(--accent-color);
+}
+
+/* SVG inside subscribe button */
+.subscribe-btn svg {
+  height: 60px;
+  width: 60px;
+}
+
+
+
+
+

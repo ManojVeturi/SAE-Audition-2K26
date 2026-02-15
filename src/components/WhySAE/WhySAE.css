@@ -1,0 +1,111 @@
+/* General Styling */
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,900&family=Poppins:wght@500&display=swap");
+.why-sdv-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 40px;
+    padding: 20px;
+    color: red;
+  }
+  
+  /* Image Gallery */
+ 
+  
+  
+  
+  /* Text Section */
+  .text-section {
+    flex: 1;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* .heading { */
+    /* font-size: 60px;
+    font-weight: 700;
+    background: linear-gradient(90deg, red, red); */
+    /* -webkit-background-clip: text; */
+    /* -webkit-text-fill-color: transparent; */
+  /* } */
+  
+  .description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #ddd;
+  }
+  
+  .feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .feature-item {
+    font-size: 1rem;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+  }
+  
+  .feature-item:hover {
+    transform: translateX(10px); /* Subtle hover animation */
+  }
+  
+  .feature-item span {
+    font-weight: 600;
+    color: #d52484;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 1024px) {
+    .why-sdv-container {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+  
+    .text-section {
+      max-width: 100%;
+    }
+  }
+
+  @media (max-width: 425px) {
+    .sdv-gallery {
+      grid-template-columns: repeat(2, 1fr); /* Maintain 2x2 grid on mobile */
+    }
+  }
+
+  /* Responsive Text Styles */
+  .responsive-heading {
+    font-size: 2rem; /* Adjusted for smaller screens */
+  }
+  
+  .responsive-description {
+    font-size: 1rem;
+  }
+  
+  .responsive-feature-item {
+    font-size: 0.9rem;
+  }
+  
+  @media (min-width: 768px) {
+    .responsive-heading {
+      font-size: 2.5rem;
+    }
+  
+    .responsive-description {
+      font-size: 1.2rem;
+    }
+  
+    .responsive-feature-item {
+      font-size: 1rem;
+    }
+  }
+
