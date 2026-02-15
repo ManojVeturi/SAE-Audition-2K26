@@ -5,7 +5,7 @@ import { Typewriter } from "react-simple-typewriter";
 import "./HomePage.css";
 import { useNavigate } from "react-router-dom";
 import CountdownTimer from "../components/CountdownTimer/CountdownTimer";
-import Timeline from "../components/TimeLine.jsx/TimeLine";
+import TimeLine from "../components/TimeLine/Timeline";
 import EntryDomains from "../components/EntryDomains/EntryDomains";
 import WhySAE from "../components/WhySAE/WhySAE";
 // import Test from "../components/Test/Test";
