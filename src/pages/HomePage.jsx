@@ -86,7 +86,7 @@ const HomePage = () => {
           <EntryDomains />
         </div>
         <div>
-          <Timeline />
+          <TimeLine />
         </div>
         <div>{/* <Test/> */}</div>
       </div>
