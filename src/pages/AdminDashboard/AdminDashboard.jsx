@@ -146,55 +146,42 @@ const AdminDashboard = () => {
           console.error('Error fetching search results:', error);
         }
       };
-      const handleSheet = async (e) => {
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyaFIGIm4alJE8yyZXwcf3LF8drgvNZm6VqvGoYsLJdfvftP_dY5CWfy7w3yXEEYK44/exec'; // Your Google Apps Script URL
-        const sheetId = "1QKNFPfP62DtR8DNcm336kNi5D6EAGBQ9LqNZoQ4n7XI";  // Your Google Sheet ID
-      
+      const handleSheet = async () => {
+        const scriptURL = import.meta.env.VITE_SCRIPT_URL;
+
         try {
-          // Loop through each object in submittedData
           for (const entry of submittedData) {
-            console.log("Entry:", entry); // Log the entry to see its structure
-      
-            // Check if 'entry' is a valid object and contains the necessary properties
-            if (entry) {
-              const { name, gender, email, phone, roll} = entry; // Access properties of the object
-      
-              const formDataSubset = new URLSearchParams();
-              formDataSubset.append('name', name);
-              formDataSubset.append('email', email);
-              formDataSubset.append('roll', roll);
-              formDataSubset.append('gender', gender);
-              formDataSubset.append('phone', phone);
-      
-              // Send the data to Google Sheets
-              const response = await fetch(scriptURL, {
-                method: 'POST',
-                body: formDataSubset,
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded',
-                },
-              });
-      
-              // Check if the response is OK
-              if (!response.ok) {
-                throw new Error('Error sending data to Google Sheets');
-              }
-            } else {
-              console.error("Entry is invalid:", entry); // Log if entry is missing expected properties
-            }
+
+            const formDataSubset = new URLSearchParams({
+              name: entry.name || "",
+              roll: entry.roll || "",
+              email: entry.email || "",
+              year: entry.year || "",
+              department: entry.department || "",
+              phone: entry.phone || "",
+              gender: entry.gender || "",
+              domain: Array.isArray(entry.domain) 
+                        ? entry.domain.join(", ") 
+                        : entry.domain || ""
+            });
+
+            const response = await fetch(scriptURL, {
+              method: "POST",
+              body: formDataSubset,
+            });
+
+            const text = await response.text();
+            console.log("Sheet response:", text);
           }
-      
-          // After data is submitted, trigger the sheet download
-          // const downloadUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=xlsx`;  // Link to download the sheet in xlsx format
-          // window.location.href = downloadUrl; // Redirect to download the sheet
-      
-          alert("Data successfully sent to the sheet!");
-      
-        } catch (error) {
-          console.error("Error submitting form:", error);
-          alert("Error submitting form to sheet.");
+
+          alert("Data successfully sent to sheet!");
+
+        } catch (err) {
+          console.error("Sheet error:", err);
+          alert("Failed to send data");
         }
-      }
+      };
+
       
 
     React.useEffect(() => {
