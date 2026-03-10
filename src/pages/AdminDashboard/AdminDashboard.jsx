@@ -152,21 +152,24 @@ const AdminDashboard = () => {
         try {
           for (const entry of submittedData) {
 
-            const formDataSubset = new URLSearchParams({
-              name: entry.name || "",
-              roll: entry.roll || "",
-              email: entry.email || "",
-              year: entry.year || "",
-              department: entry.department || "",
-              phone: entry.phone || "",
-              gender: entry.gender || "",
-              domain: Array.isArray(entry.domain) 
-                        ? entry.domain.join(", ") 
-                        : entry.domain || "",
-              questions_answers: JSON.stringify(entry.questions_answers || {}),
-              questions_answers2: JSON.stringify(entry.questions_answers2 || {})
-            });
+            const sheetData = {
+              name: formData.name,
+              email: formData.email,
+              roll: formData.roll,
+              phone: formData.phone,
+              department: formData.department,
+              gender: formData.gender,
+              year: formData.year,
+              domain: formData.domain.join(", "),
+              q1: formData.questions_answers["What motivates you to join SAE?"] || "",
+              q2: formData.questions_answers["Enter Your Club preferences."] || ""
+            };
 
+            await fetch(scriptURL, {
+              method: "POST",
+              body: new URLSearchParams(sheetData)
+            });
+            
             const response = await fetch(scriptURL, {
               method: "POST",
               body: formDataSubset,
