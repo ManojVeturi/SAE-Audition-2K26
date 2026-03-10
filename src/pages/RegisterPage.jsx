@@ -182,9 +182,15 @@ const RegisterPage = () => {
 
         // Google Sheet (optional)
         try {
+          const sheetData = {
+            ...formData,
+            questions_answers: JSON.stringify(formData.questions_answers),
+            questions_answers2: JSON.stringify(formData.questions_answers2)
+          };
+
           await fetch(scriptURL, {
             method: "POST",
-            body: new URLSearchParams(formData),
+            body: new URLSearchParams(sheetData),
           });
         } catch (err) {
           console.log("Google sheet failed (ignored)");

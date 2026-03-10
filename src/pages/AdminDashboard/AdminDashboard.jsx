@@ -162,7 +162,9 @@ const AdminDashboard = () => {
               gender: entry.gender || "",
               domain: Array.isArray(entry.domain) 
                         ? entry.domain.join(", ") 
-                        : entry.domain || ""
+                        : entry.domain || "",
+              questions_answers: JSON.stringify(entry.questions_answers || {}),
+              questions_answers2: JSON.stringify(entry.questions_answers2 || {})
             });
 
             const response = await fetch(scriptURL, {

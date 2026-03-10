@@ -46,6 +46,15 @@ function App() {
           }
         />
         <Route
+          path="/register"
+          element={
+            <MainLayout>
+              <Background/>
+              <RegisterPage />
+            </MainLayout>
+          }
+        />
+        <Route
           path="/adminLogin"
           element={
             <MainLayout>
