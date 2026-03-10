@@ -7,10 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { UserDataContext } from "../context/UserContext";
 import "./RegisterPage.css";
 import LoadingOverlay from "../components/Loading/LoadingOverlay";
+
 const RegisterPage = () => {
   const API_ENDPOINT_URL = import.meta.env.VITE_API_URL;
-  
-  const SHEET_ID = import.meta.env.VITE_SHEET_ID;
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { user } = useContext(UserDataContext);
@@ -37,36 +36,36 @@ const RegisterPage = () => {
     "Enter Your Club preferences.",
   ];
 
-
   const departmentOptions = [
-    { value: "BT", label: "BT" },
-    { value: "CSE", label: "CSE" },
-    { value: "CE", label: "CE" },
-    { value: "CHE", label: "CHE" },
-    { value: "ECE", label: "ECE" },
-    { value: "EE", label: "EE" },
-    { value: "ME", label: "ME" },
-    { value: "MME", label: "MME" },
-    { value: "MnC", label: "MnC" },
+    { value: "BT",     label: "BT" },
+    { value: "CSE",    label: "CSE" },
+    { value: "CE",     label: "CE" },
+    { value: "CHE",    label: "CHE" },
+    { value: "ECE",    label: "ECE" },
+    { value: "EE",     label: "EE" },
+    { value: "ME",     label: "ME" },
+    { value: "MME",    label: "MME" },
+    { value: "MnC",    label: "MnC" },
     { value: "Others", label: "Others" },
-    
   ];
+
   const genderOptions = [
-    { value: "Male", label: "Male" },
+    { value: "Male",   label: "Male" },
     { value: "Female", label: "Female" },
   ];
+
   const yearOptions = [
-    { value: "First", label: "1st Year" },
+    { value: "First",  label: "1st Year" },
     { value: "Second", label: "2nd Year" },
   ];
 
   const domainOptionsByYear = {
     First: [
-      { value: "Automobiles ,", label: "Automobiles" },
-      { value: "Robotics/ML ,", label: "Robotics/ML" },
-      { value: "Event Management ,", label: "Event Management" },
-      { value: "Web Development ,", label: "Web Development" },
-      { value: "GFX & VFX & Photography ,", label: "GFX & VFX & Photography" },
+      { value: "Automobiles ,",            label: "Automobiles" },
+      { value: "Robotics/ML ,",            label: "Robotics/ML" },
+      { value: "Event Management ,",       label: "Event Management" },
+      { value: "Web Development ,",        label: "Web Development" },
+      { value: "GFX & VFX & Photography ,",label: "GFX & VFX & Photography" },
     ],
     Second: [
       { value: "Automobiles ,", label: "Automobiles" },
@@ -85,36 +84,24 @@ const RegisterPage = () => {
     if (!formData.department) newErrors.department = "Department is required.";
     if (!formData.gender) newErrors.gender = "Gender selection is required.";
     if (!formData.year) newErrors.year = "Year selection is required.";
-    if (!formData.domain.length)
-      newErrors.domain = "At least one domain is required.";
+    if (!formData.domain.length) newErrors.domain = "At least one domain is required.";
     return newErrors;
   };
 
   const validateStep2 = () => {
-  const newErrors = {};
-
-  questions.forEach((question) => {
-    if (
-      !formData.questions_answers[question] ||
-      formData.questions_answers[question].trim() === ""
-    ) {
-      newErrors[question] = "This answer is required.";
-    }
-  });
-
-  return newErrors;
+    const newErrors = {};
+    questions.forEach((question) => {
+      if (!formData.questions_answers[question] || formData.questions_answers[question].trim() === "") {
+        newErrors[question] = "This answer is required.";
+      }
+    });
+    return newErrors;
   };
 
   const nextStep = () => {
     let newErrors = {};
-
-    if (step === 1) {
-      newErrors = validateStep1();
-    }
-
-    if (step === 2) {
-      newErrors = validateStep2();
-    }
+    if (step === 1) newErrors = validateStep1();
+    if (step === 2) newErrors = validateStep2();
 
     if (Object.keys(newErrors).length > 0) {
       setStepErrors(newErrors);
@@ -132,86 +119,91 @@ const RegisterPage = () => {
   };
 
   const handleGenderChange = (selectedOption) => {
-    setFormData((prev) => ({
-      ...prev,
-      gender: selectedOption ? selectedOption.value : "",
-    }));
+    setFormData((prev) => ({ ...prev, gender: selectedOption ? selectedOption.value : "" }));
   };
 
   const handleDepartmentChange = (selectedOption) => {
-    setFormData((prev) => ({
-      ...prev,
-      department: selectedOption ? selectedOption.value : "",
-    }));
+    setFormData((prev) => ({ ...prev, department: selectedOption ? selectedOption.value : "" }));
   };
+
   const handleYearChange = (selectedOption) => {
     setFormData((prev) => ({
       ...prev,
       year: selectedOption ? selectedOption.value : "",
-      domain: [], // Reset domain selection when year changes
+      domain: [],
     }));
   };
+
   const getDomainOptions = () => {
     return formData.year ? domainOptionsByYear[formData.year] : [];
   };
+
   const handleDomainChange = (selectedOptions) => {
     const selectedValues = selectedOptions.map((option) => option.value);
     setFormData((prev) => ({ ...prev, domain: selectedValues }));
   };
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     const { email } = formData;
-
     const audition_url = API_ENDPOINT_URL + "api/auditionform/";
     const scriptURL = import.meta.env.VITE_SCRIPT_URL;
     const send_email_url = API_ENDPOINT_URL + "api/send-email-to-user/";
 
     try {
-      const response = await axios.post(
-        audition_url,
-        formData,
-        { headers: { "Content-Type": "application/json" } }
-      );
+      // 1. Submit to Django backend
+      const response = await axios.post(audition_url, formData, {
+        headers: { "Content-Type": "application/json" },
+      });
 
       if (response.status === 201) {
 
-        // Google Sheet (optional)
+        // 2. Send to Google Sheet (optional — failure won't block navigation)
         try {
           const sheetData = {
-            ...formData,
-            questions_answers: JSON.stringify(formData.questions_answers),
-            questions_answers2: JSON.stringify(formData.questions_answers2)
+            name:               formData.name       || "",
+            email:              formData.email      || "",
+            roll:               formData.roll       || "",
+            phone:              formData.phone      || "",
+            department:         formData.department || "",
+            gender:             formData.gender     || "",
+            year:               formData.year       || "",
+            domain: Array.isArray(formData.domain)
+              ? formData.domain.join(", ")
+              : formData.domain || "",
+            // Stringify so doPost can JSON.parse correctly
+            questions_answers:  JSON.stringify(formData.questions_answers  || {}),
+            questions_answers2: JSON.stringify(formData.questions_answers2 || {}),
           };
 
           await fetch(scriptURL, {
             method: "POST",
             body: new URLSearchParams(sheetData),
           });
-        } catch (err) {
-          console.log("Google sheet failed (ignored)");
+        } catch (sheetErr) {
+          console.log("Google Sheet failed (non-blocking):", sheetErr);
         }
 
-        // Email (optional)
+        // 3. Send confirmation email (optional — failure won't block navigation)
         try {
           await fetch(send_email_url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email }),
           });
-        } catch (err) {
-          console.log("Email sending failed (ignored)");
+        } catch (emailErr) {
+          console.log("Email sending failed (non-blocking):", emailErr);
         }
 
         navigate("/formSubmitted");
       }
 
     } catch (err) {
-      setError("Main submission failed");
+      console.error("Main submission error:", err);
+      setError("Submission failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -224,17 +216,13 @@ const RegisterPage = () => {
           <div className="fcontainer">
             <div className="formcontainer">
               <form>
-                <h1 style={{color:"#fff"}}> <span style={{color:"red"}}> Audition</span> Form</h1>
+                <h1 style={{ color: "#fff" }}>
+                  <span style={{ color: "red" }}>Audition</span> Form
+                </h1>
                 <div style={{ position: "relative" }} className="userinput">
                   <FontAwesomeIcon
                     icon={faUser}
-                    style={{
-                      position: "absolute",
-                      left: "10px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      color: "#fff",
-                    }}
+                    style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#fff" }}
                   />
                   <input
                     type="text"
@@ -246,16 +234,10 @@ const RegisterPage = () => {
                     style={{ paddingLeft: "35px" }}
                   />
                 </div>
-                <div style={{ position: "relative" }}className="userinput">
+                <div style={{ position: "relative" }} className="userinput">
                   <FontAwesomeIcon
                     icon={faIdBadge}
-                    style={{
-                      position: "absolute",
-                      left: "10px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      color: "#fff",
-                    }}
+                    style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#fff" }}
                   />
                   <input
                     type="text"
@@ -270,13 +252,7 @@ const RegisterPage = () => {
                 <div style={{ position: "relative" }} className="userinput">
                   <FontAwesomeIcon
                     icon={faPhone}
-                    style={{
-                      position: "absolute",
-                      left: "10px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      color: "#fff",
-                    }}
+                    style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#fff" }}
                   />
                   <input
                     type="text"
@@ -288,27 +264,6 @@ const RegisterPage = () => {
                     style={{ paddingLeft: "35px" }}
                   />
                 </div>
-                {/* <div style={{ position: "relative" }} className="userinput">
-                  <FontAwesomeIcon
-                    icon={faBuilding}
-                    style={{
-                      position: "absolute",
-                      left: "10px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      color: "#fff",
-                    }}
-                  /> */}
-                  {/* <input
-                    type="text"
-                    name="department"
-                    placeholder="Enter Your Department"
-                    value={formData.department}
-                    onChange={handleInputChange}
-                    required
-                    style={{ paddingLeft: "35px" }}
-                  /> */}
-                {/* </div> */}
                 <Select
                   className="departmentoption"
                   options={departmentOptions}
@@ -327,7 +282,7 @@ const RegisterPage = () => {
                   onChange={handleYearChange}
                   placeholder="Select Year"
                 />
-                 <Select
+                <Select
                   className="domainoption"
                   options={getDomainOptions()}
                   isMulti
@@ -339,9 +294,7 @@ const RegisterPage = () => {
                 />
               </form>
               <div className="fbtn">
-                <button type="button" onClick={nextStep}>
-                  Next
-                </button>
+                <button type="button" onClick={nextStep}>Next</button>
                 {Object.values(steperrors).length > 0 && (
                   <p style={{ color: "red" }}>{Object.values(steperrors)}</p>
                 )}
@@ -350,11 +303,10 @@ const RegisterPage = () => {
           </div>
         </div>
       );
-    // Handle other steps as before...
+
     case 2:
       return (
         <div className="qmain">
-
           <div className="qcontainer">
             <div className="qcontain">
               {questions.map((question, index) => (
@@ -363,15 +315,15 @@ const RegisterPage = () => {
                     <h1>{question}</h1>
                   </div>
                   <textarea
-                    name={`question_${index}`} // Use unique name attribute
+                    name={`question_${index}`}
                     placeholder="Enter Your Answer..."
-                    value={formData.questions_answers[question] || ""} // Ensure unique storage per question
+                    value={formData.questions_answers[question] || ""}
                     onChange={(e) =>
                       setFormData((prevData) => ({
                         ...prevData,
                         questions_answers: {
                           ...prevData.questions_answers,
-                          [question]: e.target.value, // Store by question text
+                          [question]: e.target.value,
                         },
                       }))
                     }
@@ -380,96 +332,33 @@ const RegisterPage = () => {
               ))}
             </div>
             <div className="button-container">
-              <button type="button" onClick={prevStep} className="btn">
-                Back
-              </button>
-              <button type="button" onClick={nextStep} className="btn">
-                Next
-              </button>
+              <button type="button" onClick={prevStep} className="btn">Back</button>
+              <button type="button" onClick={nextStep} className="btn">Next</button>
             </div>
           </div>
         </div>
-
       );
-    // case 3:
-    //   return (
-
-    //     <div className="qmain">
-    //     <div className="qcontainer">
-    //       <div className="qcontain">
-    //         {questions2.map((question2, index) => (
-    //           <div key={index} className="question-block">
-    //             <div className="ques">
-    //               <h1>{question2}</h1>
-    //             </div>
-    //             <textarea
-    //               name={`question2_${index}`} // Use unique name attribute
-    //               placeholder="Enter Your Answer..."
-    //               value={formData.questions_answers2[question2] || ""} // Ensure unique storage per question2
-    //               onChange={(e) =>
-    //                 setFormData((prevData) => ({
-    //                   ...prevData,
-    //                   questions_answers2: {
-    //                     ...prevData.questions_answers2,
-    //                     [question2]: e.target.value, // Store by question text
-    //                   },
-    //                 }))
-    //               }
-    //             ></textarea>
-
-    //           </div>
-    //         ))}
-    //       </div>
-    //       <div className="button-container">
-    //         <button type="button" onClick={prevStep} className="btn">
-    //           Back
-    //         </button>
-    //         <button type="button" onClick={nextStep} className="btn">
-    //           Next
-    //         </button>
-    //       </div>
-    //     </div>
-    //     </div>
-    //   );
-
 
     case 3:
       return (
         <div className="formreview">
-          {loading && <LoadingOverlay/>} {/* Show overlay if loading */}
+          {loading && <LoadingOverlay />}
           <form className="finalview">
             <div className="details">
-
-              <h2><span style={{ textTransform: "uppercase", color: "red" }}>Final Step </span>: Review Details</h2>
-              <p style={{textTransform:"uppercase"}}>
-                <strong>Name  :  </strong> {formData.name}
-              </p>
-              <p>
-                <strong>Email  :  </strong> {formData.email}
-              </p>
-              <p>
-                <strong>Roll  : </strong> {formData.roll}
-              </p>
-              <p>
-                <strong>Phone  :  </strong> {formData.phone}
-              </p>
-              <p>
-                <strong>Department  :  </strong> {formData.department}
-              </p>
-              <p>
-                <strong>Year  :  </strong> {formData.year}
-              </p>
-              <p>
-                <strong>Domain  :  </strong> {formData.domain}
-              </p>
+              <h2>
+                <span style={{ textTransform: "uppercase", color: "red" }}>Final Step</span> : Review Details
+              </h2>
+              <p style={{ textTransform: "uppercase" }}><strong>Name  :  </strong>{formData.name}</p>
+              <p><strong>Email  :  </strong>{formData.email}</p>
+              <p><strong>Roll  :  </strong>{formData.roll}</p>
+              <p><strong>Phone  :  </strong>{formData.phone}</p>
+              <p><strong>Department  :  </strong>{formData.department}</p>
+              <p><strong>Year  :  </strong>{formData.year}</p>
+              <p><strong>Domain  :  </strong>{formData.domain}</p>
             </div>
             <div className="button-container">
-              <button type="button" onClick={prevStep} className="btn">
-                Back
-              </button>
-              <button type="submit" onClick={handleSubmit} className="btn">
-                Submit
-              </button>
+              <button type="button" onClick={prevStep} className="btn">Back</button>
+              <button type="submit" onClick={handleSubmit} className="btn">Submit</button>
             </div>
           </form>
           {successMessage && <p style={{ color: "#fff" }}>{successMessage}</p>}
