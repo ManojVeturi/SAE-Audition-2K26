@@ -101,6 +101,21 @@
   }
 
 }
+
+@media screen and (max-width : 430px) {
+  .formcontainer{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+
+    form{
+      backdrop-filter: blur(2px);
+    }
+  }
+}
+
 .fbtn{
   width: 100%;
   text-align: center;
