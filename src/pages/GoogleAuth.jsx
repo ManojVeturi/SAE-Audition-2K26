@@ -40,7 +40,7 @@ const handleGoogleLogin = (credentialResponse) => {
           <h1>
             <span style={{ color: "red" }}>sign-in </span>to continue
           </h1>
-          <div className="google-login" style={{ width: "20%" }}>
+          <div className="google-login">
             <GoogleLogin
             //   ref={googleButtonRef}
               onSuccess={handleGoogleLogin}

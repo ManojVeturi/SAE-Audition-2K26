@@ -122,6 +122,13 @@
   }
 }
 
+@media  screen and (max-width:430px) {
+  .reg-buttonBox{
+    max-width: 90%;
+  }
+}
+
+
 
 
 .homebtn{

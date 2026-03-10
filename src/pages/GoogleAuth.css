@@ -82,12 +82,19 @@
     margin-bottom: 5vh;
     font-family: "Playwrite VN", serif;
   }
-
-
 }
-@media screen and (max-width: 426px){
+
+.google-login{
+  justify-content: center;
+  width: 20%;
+}
+
+@media screen and (max-width: 430px){
   .g-auth h1{
     font-size: 8vw;
+  }
+  .google-login{
+    width: 50%;
   }
   
 }
