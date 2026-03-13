@@ -166,45 +166,53 @@ const AdminDashboard = () => {
     };
 
     const handleSheet = async () => {
-        const scriptURL = import.meta.env.VITE_SCRIPT_URL;
-        let successCount = 0;
-        let failCount = 0;
+    const scriptURL = import.meta.env.VITE_SCRIPT_URL;
 
-        for (const entry of submittedData) {
-            const sheetData = {
-                name:               entry.name       || "",
-                email:              entry.email      || "",
-                roll:               entry.roll       || "",
-                phone:              entry.phone      || "",
-                department:         entry.department || "",
-                gender:             entry.gender     || "",
-                year:               entry.year       || "",
-                domain: Array.isArray(entry.domain)
-                    ? entry.domain.join(", ")
-                    : entry.domain || "",
-                questions_answers:  JSON.stringify(entry.questions_answers  || {}),
-                questions_answers2: JSON.stringify(entry.questions_answers2 || {}),
-            };
+    // Build flat rows
+    const allData = submittedData.map((entry, index) => {
+        const row = {
+            "#": index + 1,
+            Name: entry.name || "",
+            Email: entry.email || "",
+            Roll: entry.roll || "",
+            Phone: entry.phone || "",
+            Department: entry.department || "",
+            Gender: entry.gender || "",
+            Year: entry.year || "",
+            Domain: Array.isArray(entry.domain) ? entry.domain.join(", ") : entry.domain || "",
+        };
 
-            try {
-                const response = await fetch(scriptURL, {
-                    method: "POST",
-                    body: new URLSearchParams(sheetData),
-                });
-                const text = await response.text();
-                console.log("Sheet response for", entry.name, ":", text);
-                successCount++;
-            } catch (err) {
-                console.error("Sheet error for", entry.name, ":", err);
-                failCount++;
-            }
-        }
+        Object.entries(entry.questions_answers || {}).forEach(([q, a], idx) => {
+            row[`Q${idx + 1}: ${q}`] = a;
+        });
 
-        if (failCount === 0) {
-            alert(`✅ All ${successCount} records sent to sheet successfully!`);
+        Object.entries(entry.questions_answers2 || {}).forEach(([q, a], idx) => {
+            row[`Q${idx + 1 + Object.keys(entry.questions_answers || {}).length}: ${q}`] = a;
+        });
+
+        return row;
+    });
+
+    try {
+        const response = await fetch(scriptURL, {
+            method: "POST",
+            body: new URLSearchParams({
+                action: "createSheet",
+                allData: JSON.stringify(allData),
+            }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert(`✅ New sheet "${result.sheet}" created with ${allData.length} records!`);
         } else {
-            alert(`⚠️ ${successCount} sent, ${failCount} failed. Check console for details.`);
+            alert("⚠️ Something went wrong. Check console.");
         }
+    } catch (err) {
+        console.error("Sheet error:", err);
+        alert("❌ Failed to create sheet. Check console.");
+    }
     };
 
     return (
