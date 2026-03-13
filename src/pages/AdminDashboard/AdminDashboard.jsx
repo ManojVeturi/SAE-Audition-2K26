@@ -166,53 +166,64 @@ const AdminDashboard = () => {
     };
 
     const handleSheet = async () => {
-    const scriptURL = import.meta.env.VITE_SCRIPT_URL;
+        const scriptURL = import.meta.env.VITE_SCRIPT_URL;
 
-    // Build flat rows
-    const allData = submittedData.map((entry, index) => {
-        const row = {
-            "#": index + 1,
-            Name: entry.name || "",
-            Email: entry.email || "",
-            Roll: entry.roll || "",
-            Phone: entry.phone || "",
-            Department: entry.department || "",
-            Gender: entry.gender || "",
-            Year: entry.year || "",
-            Domain: Array.isArray(entry.domain) ? entry.domain.join(", ") : entry.domain || "",
-        };
+        const allData = submittedData.map((entry, index) => {
+            const row = {
+                "#": index + 1,
+                Name: entry.name || "",
+                Email: entry.email || "",
+                Roll: entry.roll || "",
+                Phone: entry.phone || "",
+                Department: entry.department || "",
+                Gender: entry.gender || "",
+                Year: entry.year || "",
+                Domain: Array.isArray(entry.domain) ? entry.domain.join(", ") : entry.domain || "",
+            };
 
-        Object.entries(entry.questions_answers || {}).forEach(([q, a], idx) => {
-            row[`Q${idx + 1}: ${q}`] = a;
+            Object.entries(entry.questions_answers || {}).forEach(([q, a], idx) => {
+                row[`Q${idx + 1}: ${q}`] = a;
+            });
+
+            Object.entries(entry.questions_answers2 || {}).forEach(([q, a], idx) => {
+                row[`Q${idx + 1 + Object.keys(entry.questions_answers || {}).length}: ${q}`] = a;
+            });
+
+            return row;
         });
 
-        Object.entries(entry.questions_answers2 || {}).forEach(([q, a], idx) => {
-            row[`Q${idx + 1 + Object.keys(entry.questions_answers || {}).length}: ${q}`] = a;
-        });
+        try {
+            const response = await fetch(scriptURL, {
+                method: "POST",
+                body: new URLSearchParams({
+                    action: "createSheet",
+                    allData: JSON.stringify(allData),
+                }),
+            });
 
-        return row;
-    });
+            // Read as text first to see exactly what comes back
+            const text = await response.text();
+            console.log("Raw response:", text);
 
-    try {
-        const response = await fetch(scriptURL, {
-            method: "POST",
-            body: new URLSearchParams({
-                action: "createSheet",
-                allData: JSON.stringify(allData),
-            }),
-        });
+            // Try to parse as JSON
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch {
+                alert("⚠️ Script returned non-JSON. Check console for raw response.");
+                return;
+            }
 
-        const result = await response.json();
+            if (result.status === "success") {
+                alert(`✅ New sheet "${result.sheet}" created with ${allData.length} records!`);
+            } else {
+                alert(`⚠️ Script error: ${result.message || "Unknown error"}`);
+            }
 
-        if (result.success) {
-            alert(`✅ New sheet "${result.sheet}" created with ${allData.length} records!`);
-        } else {
-            alert("⚠️ Something went wrong. Check console.");
+        } catch (err) {
+            console.error("Fetch error:", err);
+            alert("❌ Failed to reach script. Check console.");
         }
-    } catch (err) {
-        console.error("Sheet error:", err);
-        alert("❌ Failed to create sheet. Check console.");
-    }
     };
 
     return (
