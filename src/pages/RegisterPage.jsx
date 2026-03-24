@@ -61,18 +61,18 @@ const RegisterPage = () => {
 
   const domainOptionsByYear = {
     First: [
-      { value: "Automobiles ,",            label: "Automobiles" },
-      { value: "Robotics/ML ,",            label: "Robotics/ML" },
-      { value: "Event Management ,",       label: "Event Management" },
-      { value: "Web Development ,",        label: "Web Development" },
-      { value: "GFX & VFX & Photography ,",label: "GFX & VFX & Photography" },
+      { value: "Automobiles", label: "Automobiles" },
+      { value: "Robotics", label: "Robotics" },
+      { value: "Event Management", label: "Event Management" },
+      { value: "Web Development", label: "Web Development" },
+      { value: "Graphics Designing", label: "Graphics Designing" },
     ],
     Second: [
-      { value: "Automobiles ,", label: "Automobiles" },
-      { value: "Robotics/ML ,", label: "Robotics/ML" },
-      { value: "Event Management ,",       label: "Event Management" },
-      { value: "Web Development ,",        label: "Web Development" },
-      { value: "GFX & VFX & Photography ,",label: "GFX & VFX & Photography" },
+      { value: "Automobiles", label: "Automobiles" },
+      { value: "Robotics", label: "Robotics" },
+      { value: "Event Management", label: "Event Management" },
+      { value: "Web Development", label: "Web Development" },
+      { value: "Graphics Designing", label: "Graphics Designing" },
     ],
   };
 
@@ -152,19 +152,25 @@ const RegisterPage = () => {
     setLoading(true);
 
     const { email } = formData;
+
+    // ✅ STEP 3 FIX: remove unwanted field
+    const { questions_answers2, ...cleanData } = formData;
+
     const audition_url = API_ENDPOINT_URL + "api/auditionform/";
     const scriptURL = import.meta.env.VITE_SCRIPT_URL;
     const send_email_url = API_ENDPOINT_URL + "api/send-email-to-user/";
 
     try {
+      console.log("DATA BEING SENT:", cleanData); // ✅ debug
+
       // 1. Submit to Django backend
-      const response = await axios.post(audition_url, formData, {
+      const response = await axios.post(audition_url, cleanData, {
         headers: { "Content-Type": "application/json" },
       });
 
       if (response.status === 201) {
 
-        // 2. Send to Google Sheet (optional — failure won't block navigation)
+        // 2. Send to Google Sheet (optional)
         try {
           const sheetData = {
             name:               formData.name       || "",
@@ -177,8 +183,7 @@ const RegisterPage = () => {
             domain: Array.isArray(formData.domain)
               ? formData.domain.join(", ")
               : formData.domain || "",
-            // Stringify so doPost can JSON.parse correctly
-            questions_answers:  JSON.stringify(formData.questions_answers  || {}),
+            questions_answers:  JSON.stringify(formData.questions_answers || {}),
             questions_answers2: JSON.stringify(formData.questions_answers2 || {}),
           };
 
@@ -187,10 +192,10 @@ const RegisterPage = () => {
             body: new URLSearchParams(sheetData),
           });
         } catch (sheetErr) {
-          console.log("Google Sheet failed (non-blocking):", sheetErr);
+          console.log("Google Sheet failed:", sheetErr);
         }
 
-        // 3. Send confirmation email (optional — failure won't block navigation)
+        // 3. Send confirmation email
         try {
           await fetch(send_email_url, {
             method: "POST",
@@ -198,7 +203,7 @@ const RegisterPage = () => {
             body: JSON.stringify({ email }),
           });
         } catch (emailErr) {
-          console.log("Email sending failed (non-blocking):", emailErr);
+          console.log("Email failed:", emailErr);
         }
 
         navigate("/formSubmitted");
@@ -206,7 +211,15 @@ const RegisterPage = () => {
 
     } catch (err) {
       console.error("Main submission error:", err);
-      setError("Submission failed. Please try again.");
+
+      // ✅ SHOW REAL BACKEND ERROR
+      console.log("Backend error:", err.response?.data);
+
+      setError(
+        err.response?.data?.roll?.[0] ||
+        err.response?.data?.error ||
+        "Submission failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
