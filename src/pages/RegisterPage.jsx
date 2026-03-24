@@ -70,6 +70,9 @@ const RegisterPage = () => {
     Second: [
       { value: "Automobiles ,", label: "Automobiles" },
       { value: "Robotics/ML ,", label: "Robotics/ML" },
+      { value: "Event Management ,",       label: "Event Management" },
+      { value: "Web Development ,",        label: "Web Development" },
+      { value: "GFX & VFX & Photography ,",label: "GFX & VFX & Photography" },
     ],
   };
 
