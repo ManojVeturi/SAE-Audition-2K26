@@ -65,7 +65,7 @@ const RegisterPage = () => {
       { value: "Robotics", label: "Robotics" },
       { value: "Event Management", label: "Event Management" },
       { value: "Web Development", label: "Web Development" },
-      { value: "GFX & VFX & Photography", label: "GFX & VFX & Photography" },
+      { value: "Graphics Designing", label: "GFX & VFX & Photography" },
     ],
     Second: [
       { value: "Automobiles", label: "Automobiles" },
