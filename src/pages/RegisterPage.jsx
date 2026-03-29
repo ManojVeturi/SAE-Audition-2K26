@@ -65,7 +65,7 @@ const RegisterPage = () => {
       { value: "Robotics", label: "Robotics" },
       { value: "Event Management", label: "Event Management" },
       { value: "Web Development", label: "Web Development" },
-      { value: "Graphics Designing", label: "Graphics Designing" },
+      { value: "GFX & VFX & Photography", label: "GFX & VFX & Photography" },
     ],
     Second: [
       { value: "Automobiles", label: "Automobiles" },
@@ -216,9 +216,10 @@ const RegisterPage = () => {
       console.log("Backend error:", err.response?.data);
 
       setError(
+        err.response?.data?.email?.[0] ||
         err.response?.data?.roll?.[0] ||
         err.response?.data?.error ||
-        "Submission failed. Please try again."
+        "You have already submitted the form."
       );
     } finally {
       setLoading(false);
